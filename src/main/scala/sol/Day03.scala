@@ -23,10 +23,10 @@ class Day03(src: BufferedSource) extends Solution:
     arr(0) + arr(1) > arr(2) && arr(1) + arr(2) > arr(0) && arr(2) + arr(0) > arr(1)
 
   def partOne(): String =
-    "%s".format(triangles.count(isTriangle))
+    "%d".format(triangles.count(isTriangle))
 
   def partTwo(): String =
-    "%s".format(triangles.grouped(3).flatMap(_.transpose).count(isTriangle))
+    "%d".format(triangles.grouped(3).flatMap(_.transpose).count(isTriangle))
 
   def solve(): Unit =
     printf("%s\n", partOne())

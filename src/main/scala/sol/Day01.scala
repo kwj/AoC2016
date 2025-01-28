@@ -41,7 +41,7 @@ class Day01(src: BufferedSource) extends Solution:
           (newDir, state(1) + (dirTbl(newDir) * inst(1)))
         )
 
-    "%s".format(lastPos.distance())
+    "%d".format(lastPos.distance())
 
   def partTwo(): String =
     val positions =
@@ -53,7 +53,7 @@ class Day01(src: BufferedSource) extends Solution:
         )
         .flatMap(_(1))
 
-    "%s".format(positions.diff(positions.distinct).head.distance())
+    "%d".format(positions.diff(positions.distinct).head.distance())
 
   def solve(): Unit =
     printf("%s\n", partOne())
