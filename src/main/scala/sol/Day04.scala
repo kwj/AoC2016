@@ -3,7 +3,7 @@ package net.vlax.aoc2016.sol
 import scala.io.BufferedSource
 
 class Day04(src: BufferedSource) extends Solution:
-  private case class roomInfo(val encName: String, val sectorId: Int, val checkSum: String):
+  private class roomInfo(val encName: String, val sectorId: Int, val checkSum: String):
     def isValidCheckSum() =
       encName.toArray
         .filter(_ != '-')
