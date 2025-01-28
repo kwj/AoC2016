@@ -39,6 +39,7 @@ class Day02(src: BufferedSource) extends Solution:
       Array('.', '.', '.', '.', '.')
     )
 
+    // layout(2)(2) is '5'
     val keypad = Pad(2, 2, layout)
 
     getCode(keypad, instructions)
@@ -54,6 +55,7 @@ class Day02(src: BufferedSource) extends Solution:
       Array('.', '.', '.', '.', '.', '.', '.')
     )
 
+    // layout(3)(1) is '5'
     val keypad = Pad(3, 1, layout)
 
     getCode(keypad, instructions)
