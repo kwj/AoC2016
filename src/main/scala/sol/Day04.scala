@@ -10,12 +10,7 @@ class Day04(src: BufferedSource) extends Solution:
         .groupBy(identity)
         .map((k, v) => (k, v.size)) // (character, number of characters)
         .toSeq
-        .sortWith((a, b) =>
-          a(1).compareTo(b(1)) match
-            case x if x < 0 => false
-            case x if x > 0 => true
-            case _ => a(0) < b(0)
-        )
+        .sortBy({case (k, v) => (-v, k)})
         .take(5)
         .map(_(0))
         .mkString
