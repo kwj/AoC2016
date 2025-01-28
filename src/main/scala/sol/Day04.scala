@@ -8,9 +8,8 @@ class Day04(src: BufferedSource) extends Solution:
       encName.toArray
         .filter(_ != '-')
         .groupBy(identity)
-        .map((k, v) => (k, v.size)) // (character, number of characters)
         .toSeq
-        .sortBy({case (k, v) => (-v, k)})
+        .sortBy({ case (k, v) => (-v.size, k) })
         .take(5)
         .map(_(0))
         .mkString
@@ -18,11 +17,10 @@ class Day04(src: BufferedSource) extends Solution:
 
     def decode() =
       encName
-        .map(ch =>
-          ch match
-            case '-' => ' '
-            case _ => ((ch + sectorId - 'a') % 26 + 'a').toChar
-        )
+        .map({
+          case '-' => ' '
+          case ch => ((ch + sectorId - 'a') % 26 + 'a').toChar
+        })
         .mkString
 
   private def parseInput(src: BufferedSource) =
@@ -32,11 +30,10 @@ class Day04(src: BufferedSource) extends Solution:
 
     src
       .getLines()
-      .map(line =>
-        line match
-          case re(encName, sectorId, checkSum) => roomInfo(encName, sectorId.toInt, checkSum)
-          case _ => throw new RuntimeException(s"Invalid data: $line")
-      )
+      .map({
+        case re(encName, sectorId, checkSum) => roomInfo(encName, sectorId.toInt, checkSum)
+        case line => throw new RuntimeException(s"Invalid data: $line")
+      })
       .toSeq
 
   private val rooms = parseInput(src)

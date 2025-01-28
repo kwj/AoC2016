@@ -21,12 +21,11 @@ class Day01(src: BufferedSource) extends Solution:
     src
       .getLines()
       .flatMap(_.split(", "))
-      .map(token =>
-        token match
-          case reL(n) => (-1, token.substring(1).toInt)
-          case reR(n) => (1, token.substring(1).toInt)
-          case _ => throw new RuntimeException(s"Invalid instruction: $token")
-      )
+      .map({
+        case reL(n) => (-1, n.toInt)
+        case reR(n) => (1, n.toInt)
+        case token => throw new RuntimeException(s"Invalid instruction: $token")
+      })
       .toSeq
 
   // [(direction of turn, distance), ...]

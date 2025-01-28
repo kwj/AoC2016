@@ -10,11 +10,10 @@ class Day03(src: BufferedSource) extends Solution:
 
     src
       .getLines()
-      .map(line =>
-        line match
-          case re(n1, n2, n3) => Array(n1.toInt, n2.toInt, n3.toInt)
-          case _ => throw new RuntimeException(s"Invalid data: $line")
-      )
+      .map({
+        case re(n1, n2, n3) => Array(n1.toInt, n2.toInt, n3.toInt)
+        case line => throw new RuntimeException(s"Invalid data: $line")
+      })
       .toArray
 
   private val triangles = parseInput(src)
