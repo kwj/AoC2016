@@ -4,7 +4,7 @@ import scala.io.BufferedSource
 
 class Day04(src: BufferedSource) extends Solution:
   private class roomInfo(val encName: String, val sectorId: Int, val checkSum: String):
-    def isValidCheckSum() =
+    def isValidCheckSum(): Boolean =
       encName.toArray
         .filter(_ != '-')
         .groupBy(identity)
@@ -15,7 +15,7 @@ class Day04(src: BufferedSource) extends Solution:
         .mkString
         == checkSum
 
-    def decode() =
+    def decode(): String =
       encName
         .map({
           case '-' => ' '
@@ -23,7 +23,7 @@ class Day04(src: BufferedSource) extends Solution:
         })
         .mkString
 
-  private def parseInput(src: BufferedSource) =
+  private def parseInput(src: BufferedSource): Seq[roomInfo] =
     import scala.util.matching.Regex
 
     val re = raw"(\S+)-(\d+)\[(\S+)\]".r
@@ -38,7 +38,7 @@ class Day04(src: BufferedSource) extends Solution:
 
   private val rooms = parseInput(src)
 
-  private def isNorthPoleObject(s: String) =
+  private def isNorthPoleObject(s: String): Boolean =
     import scala.util.matching.Regex
 
     val re1 = raw"north".r.unanchored

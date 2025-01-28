@@ -14,7 +14,7 @@ class Day02(src: BufferedSource) extends Solution:
 
     def getChar(): Char = keypad(x)(y)
 
-  private def parseInput(src: BufferedSource) =
+  private def parseInput(src: BufferedSource): Seq[Array[Char]] =
     src
       .getLines()
       .map(_.toArray)
@@ -22,7 +22,7 @@ class Day02(src: BufferedSource) extends Solution:
 
   private val instructions = parseInput(src)
 
-  private def getCode(keypad: Pad, insts: Seq[Array[Char]]) =
+  private def getCode(keypad: Pad, insts: Seq[Array[Char]]): String =
     insts
       .map(directions =>
         directions.foreach(keypad.move)
