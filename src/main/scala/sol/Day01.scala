@@ -3,7 +3,7 @@ package net.vlax.aoc2016.sol
 import scala.io.BufferedSource
 
 class Day01(src: BufferedSource) extends Solution:
-  private case class Pos2D(val x: Int, val y: Int):
+  private case class Pos2D(x: Int, y: Int):
     def +(other: Pos2D): Pos2D = Pos2D(x + other.x, y + other.y)
     def *(k: Int): Pos2D = Pos2D(x * k, y * k)
     def distance(): Int = x.abs + y.abs // manhattan distance from the starting position
