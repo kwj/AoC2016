@@ -20,7 +20,7 @@ class Day02(src: BufferedSource) extends Solution:
       .map(_.toArray)
       .toSeq
 
-  private val instructions = parseInput(src)
+  private lazy val instructions = parseInput(src)
 
   private def getCode(keypad: Pad, insts: Seq[Array[Char]]): String =
     insts

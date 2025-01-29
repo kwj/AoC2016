@@ -36,7 +36,7 @@ class Day04(src: BufferedSource) extends Solution:
       })
       .toSeq
 
-  private val rooms = parseInput(src)
+  private lazy val rooms = parseInput(src)
 
   private def isNorthPoleObject(s: String): Boolean =
     import scala.util.matching.Regex

@@ -30,7 +30,7 @@ class Day01(src: BufferedSource) extends Solution:
 
   // [(direction of turn, distance), ...]
   //   direction -  1:right, -1:left
-  private val instructions = parseInput(src)
+  private lazy val instructions = parseInput(src)
 
   def partOne(): String =
     val (_, lastPos) =

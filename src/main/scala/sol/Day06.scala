@@ -3,7 +3,7 @@ package net.vlax.aoc2016.sol
 import scala.io.BufferedSource
 
 class Day06(src: BufferedSource) extends Solution:
-  private val messages = src.getLines().map(_.toArray).toArray.transpose
+  private lazy val messages = src.getLines().map(_.toArray).toArray.transpose
 
   def partOne(): String =
     messages

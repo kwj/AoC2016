@@ -19,7 +19,7 @@ class Day07(src: BufferedSource) extends Solution:
       .map((outer, inner) => (outer.mkString(" "), inner.mkString(" ")))
       .toSeq
 
-  private val addressInfo = parseInput(src)
+  private lazy val addressInfo = parseInput(src)
 
   def partOne(): String =
     import scala.util.matching.Regex

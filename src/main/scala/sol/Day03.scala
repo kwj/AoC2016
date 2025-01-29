@@ -16,7 +16,7 @@ class Day03(src: BufferedSource) extends Solution:
       })
       .toArray
 
-  private val triangles = parseInput(src)
+  private lazy val triangles = parseInput(src)
 
   private def isTriangle(arr: Array[Int]): Boolean =
     arr(0) + arr(1) > arr(2) && arr(1) + arr(2) > arr(0) && arr(2) + arr(0) > arr(1)

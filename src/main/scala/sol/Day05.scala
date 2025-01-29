@@ -3,7 +3,7 @@ package net.vlax.aoc2016.sol
 import scala.io.BufferedSource
 
 class Day05(src: BufferedSource) extends Solution:
-  private val doorId = src.getLines().toSeq.head
+  private lazy val doorId = src.getLines().toSeq.head
 
   private def intToHexChar(x: Int): Char =
     val tbl = "0123456789abcdef".toArray
