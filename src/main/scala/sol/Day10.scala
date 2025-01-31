@@ -4,9 +4,23 @@ import scala.collection.mutable.{ArrayBuffer, HashMap, HashSet, Queue}
 import scala.io.BufferedSource
 
 /*
-  bot ID: 0 ..
-  output ID: 0, 1 ..  --> -1, -2, ...
- */
+  target:
+    bot ID: 0 ..
+    output ID: 0, 1 ..  --> -1, -2, ...
+
+  instruction:
+    Delivery(destination(target ID), value(microship number))
+
+  state machine:
+    HashMap[target id, target]
+
+  The `target.post(value)` method returns a Option value.
+    When a bot receives a second microchip:
+      Some(bot id, (value1, value2), list of next instructions)
+      (Note: The bot returns all microchips, so it becomes to have no microchips)
+    Otherwise:
+      None
+*/
 
 class Day10(src: BufferedSource) extends Solution:
   private case class Delivery(dst: Int, v: Int)
