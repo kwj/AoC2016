@@ -7,7 +7,7 @@ class Day12(src: BufferedSource) extends Solution:
   private type Registers = HashMap[String, Int]
   private type Op = (Int, Registers) => (Int, Registers)
 
-  object OpCode:
+  private object OpCode:
     def opCpy(opd1: String, opd2: String): Op =
       (ip: Int, reg: Registers) =>
         opd1.toIntOption match
