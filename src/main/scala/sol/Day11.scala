@@ -99,7 +99,6 @@ class Day11(src: BufferedSource) extends Solution:
       yield (State(newFloor, newChipLocs, newGenLocs), dstChips)
 
   private def nextStates(state: State): Iterator[(State, Vector[Int])] =
-    val State(floor, chipLocs, genLocs) = state
     val (chips, gens, localPairs) = floorItems(state)
     val dirs = Vector(1, -1).filter(x => (firstFloor to fourthFloor).contains(x + state.elev))
 
