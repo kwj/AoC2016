@@ -52,8 +52,8 @@ class Day08(src: BufferedSource) extends Solution:
 
     def display(): String = grid.map(_.mkString).mkString("\n")
 
-  private final val Height = 6
-  private final val Width = 50
+  private inline val Height = 6
+  private inline val Width = 50
 
   private def execOperations(): Grid =
     val g = Grid(Height, Width)
