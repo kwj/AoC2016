@@ -55,7 +55,7 @@ class Day11(src: BufferedSource) extends Solution:
 
     (chips, gens, localPairs)
 
-  private def updateLocs(locs: Vector[Int], movs: Vector[Int], dir: Int): Vector[Int] =
+  private inline def updateLocs(locs: Vector[Int], movs: Vector[Int], dir: Int): Vector[Int] =
     movs.foldLeft(locs)((vs, idx) => vs.updated(idx, vs(idx) + dir))
 
   private def moveChips(
