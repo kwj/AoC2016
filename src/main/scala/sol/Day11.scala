@@ -117,9 +117,7 @@ class Day11(src: BufferedSource) extends Solution:
         state.genLocs(c) == floor || !state.genLocs.contains(floor)
       )
 
-    val seen = HashSet[Long](stateHash(initState))
-
-    def bfs(q: Queue[(Int, State)]): Int =
+    def bfs(q: Queue[(Int, State)], seen: HashSet[Long]): Int =
       val (step, state) = q.dequeue()
 
       if isComplete(state) then step
@@ -132,9 +130,9 @@ class Day11(src: BufferedSource) extends Solution:
               seen.add(hash)
               q.enqueue((step + 1, st))
           )
-        bfs(q)
+        bfs(q, seen)
 
-    bfs(Queue((0, initState)))
+    bfs(Queue((0, initState)), HashSet(stateHash(initState)))
 
   def partOne(): String =
     val ans = execute(State(firstFloor, initChips, initGens))
