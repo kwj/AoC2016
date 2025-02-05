@@ -23,6 +23,7 @@ object Solver:
       case 11 => Some(Day11(input))
       case 12 => Some(Day12(input))
       case 13 => Some(Day13(input))
+      case 14 => Some(Day14(input))
       case _ =>
         println(f"There is no solver for Day $x%d")
         None
