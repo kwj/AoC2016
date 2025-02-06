@@ -44,12 +44,12 @@ class Day14(src: BufferedSource) extends Solution:
     val c3s = getConsecNumbers(data, 3)
     val c5s = getConsecNumbers(data, 5)
 
-    val c3 = if c3s.isEmpty then 0 else 1 << c3s.next()
-    val c5 = c5s.foldLeft(0)((acc, n) => acc | (1 << n))
+    (
+      if c3s.isEmpty then 0 else 1 << c3s.next(), // Only the first triplet is valid
+      c5s.foldLeft(0)((acc, n) => acc | (1 << n))
+    )
 
-    (c3, c5)
-
-  private def searchKeyIndexes(seed: String, stretch: Int = 0): Iterator[(Int, Int, Int)] =
+  private def searchKeyIndexes(seed: String, stretch: Int = 0): Iterator[Int] =
     val md5 = MessageDigest.getInstance("MD5")
 
     hashGenerator(seed)
@@ -59,18 +59,19 @@ class Day14(src: BufferedSource) extends Solution:
       .zipWithIndex
       .map((s, idx) =>
         val (c3, c5) = checkConsecutive(s)
-        (idx, c3, c5)
+        (idx, s, c3, c5)
       )
       .sliding(1 + nConsecutive)
-      .filter({ case (i, c3, _) +: rest => c3 != 0 && rest.exists((_, _, c5) => (c3 & c5) != 0) })
+      .filter({ case (_, _, c3, _) +: rest => c3 != 0 && rest.exists((_, _, _, c5) => (c3 & c5) != 0) })
       .map(_.head)
+      .map(_(0))
 
   def partOne(): String =
-    "%d".format(searchKeyIndexes(salt).drop(nth - 1).next()(0))
+    "%d".format(searchKeyIndexes(salt).drop(nth - 1).next())
 
   def partTwo(): String =
     // Note that it took a few minutes on Raspberry Pi 4.
-    "%d".format(searchKeyIndexes(salt, 2016).drop(nth - 1).next()(0))
+    "%d".format(searchKeyIndexes(salt, 2016).drop(nth - 1).next())
 
   def solve(): Unit =
     printf("%s\n", partOne())
