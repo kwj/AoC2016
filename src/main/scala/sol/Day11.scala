@@ -1,151 +1,153 @@
 package net.vlax.aoc2016.sol
 
-import scala.collection.mutable.{HashMap, HashSet, Queue}
+// Note: this solution assumes that the fourth floor is the top floor.
+//
+// type(kind):      A  B  C
+// ----------------------------
+// microchip(chip): 0, 2, 4, ...
+// generator(gen):  1, 3, 5, ...
+
 import scala.io.BufferedSource
 
 class Day11(src: BufferedSource) extends Solution:
-  private case class State(elev: Int, chipLocs: Vector[Int], genLocs: Vector[Int])
-  private inline val firstFloor = 0
-  private inline val fourthFloor = 3
+  private case class State(elev: Int, locs: Vector[Vector[Int]], step: Int, priority: Int)
+  private def stateOrder(state: State): Int =
+    // `state.step` is also used as a parameter for tie-breaking
+    inline val k = 10
+    -(state.priority << k) + state.step
 
-  private def parseInput(src: BufferedSource): (Vector[Int], Vector[Int]) =
+  private inline def toGen(n: Int): Int = n | 0b1
+  private inline def toChip(n: Int): Int = n & ~0b1
+  private inline def isGen(n: Int): Boolean = (n & 0b1) == 1
+  private inline def isChip(n: Int): Boolean = (n & 0b1) == 0
+
+  private def parseInput(src: BufferedSource): Vector[Vector[Int]] =
+    import scala.collection.mutable.HashMap
     import scala.util.matching.Regex
 
+    val reNothing = raw"nothing".r.unanchored
     val reItem = raw"a (\w+)(?:-compatible)? (\w+)?".r
-    val chipMap = HashMap[String, Int]()
-    val genMap = HashMap[String, Int]()
+    val kindMap = HashMap[String, Int]()
 
     src
       .getLines()
       .zipWithIndex
-      .foreach((line, idx) =>
-        reItem
-          .findAllMatchIn(line)
-          .foreach(m =>
-            m.group(2) match
-              case "microchip" => chipMap.addOne((m.group(1), idx))
-              case _ => genMap.addOne((m.group(1), idx))
-          )
+      .map((line, idx) =>
+        if reNothing.matches(line) then Vector()
+        else
+          val kinds =
+            for
+              m <- reItem.findAllMatchIn(line)
+              kind = kindMap.getOrElseUpdate(m.group(1), kindMap.size) << 1
+            yield m.group(2) match
+              case "generator" => toGen(kind)
+              case _ => kind
+          kinds.toVector
       )
+      .toVector
 
-    val chips = (for name <- chipMap.keys.toSeq yield chipMap(name)).toVector
-    val gens = (for name <- chipMap.keys.toSeq yield genMap(name)).toVector
+  private lazy val locations = parseInput(src)
+  private var nKinds = 0
 
-    (chips, gens)
+  private def stateHash(elev: Int, locs: Vector[Vector[Int]]): Long =
+    assert(nKinds != 0)
+    val arr = Array.fill(nKinds)(0L)
+    locs.zipWithIndex.map((items, idx) =>
+      items.foreach(x => arr(x >> 1) |= (idx << ((x & 0b1) << 1)))
+    )
+    arr.sorted.foldLeft(elev.toLong)((acc, x) => (acc << 4) | x)
 
-  private lazy val (initChips, initGens) = parseInput(src)
+  // heuristic function for A*
+  private def h(elev: Int, locs: Vector[Vector[Int]]): Int =
+    // number of steps required to move all items to up one floor.
+    def m(x: Int) = if x < 2 then x else 2 * (x - 2) + 1
 
-  private def stateHash(state: State): Long =
-    val State(floor, chips, gens) = state
-    chips
-      .zip(gens)
-      .map((c, g) => (c << 2) + g)
-      .sorted
-      .foldLeft(floor.toLong)((acc, x) => (acc << 4) + x)
+    val arr = locs.map(_.length).toArray
+    val lowestFloor = arr.indexWhere(_ != 0)
+    val gap = elev - lowestFloor
+    if gap > 0 then
+      arr(lowestFloor) += 1
+      arr(elev) -= 1
 
-  private inline def selectItems(locs: Vector[Int], floor: Int): Vector[Int] =
-    locs.zipWithIndex.filter((loc, idx) => loc == floor).map(_(1))
+    val (_, v) =
+      arr.init
+        .foldLeft((0, gap))((tpl, x) =>
+          val nItems = tpl(0) + x
+          (nItems, tpl(1) + m(nItems))
+        )
+    v
 
-  private def floorItems(state: State): (Vector[Int], Vector[Int], Vector[Int]) =
-    val State(floor, chipLocs, genLocs) = state
+  private def selectItems(items: Vector[Int]): Iterator[Vector[Int]] =
+    val (gens, chips) = items.partition(isGen)
+    val pairIt =
+      gens.find(g => chips.exists(_ == toChip(g))) match
+        case Some(g) => Iterator.apply(Vector(g, toChip(g)))
+        case None => Iterator.empty
 
-    val chips = selectItems(chipLocs, floor)
-    val gens = selectItems(genLocs, floor)
-    val localPairs = chips.filter(gens.contains)
+    pairIt
+      ++ gens.combinations(2)
+      ++ gens.combinations(1)
+      ++ chips.combinations(2)
+      ++ chips.combinations(1)
 
-    (chips, gens, localPairs)
+  private def moveItems(
+      locs: Vector[Vector[Int]],
+      src: Int,
+      dst: Int,
+      items: Vector[Int]
+  ): Vector[Vector[Int]] =
+    val newSrc = locs(src).filterNot(x => items.exists(_ == x))
+    val newDst = locs(dst) ++ items
 
-  private inline def updateLocs(locs: Vector[Int], movs: Vector[Int], dir: Int): Vector[Int] =
-    movs.foldLeft(locs)((vs, idx) => vs.updated(idx, vs(idx) + dir))
+    locs.updated(src, newSrc).updated(dst, newDst)
 
-  private def moveChips(
-      state: State,
-      upDown: Vector[Int],
-      chips: Vector[Int]
-  ): Iterator[(State, Vector[Int])] =
-    for
-      movs <- chips.combinations(2) ++ chips.combinations(1)
-      dir <- upDown
-      newFloor = state.elev + dir
-    yield (State(newFloor, updateLocs(state.chipLocs, movs, dir), state.genLocs), movs)
+  private def isSafe(items: Vector[Int]): Boolean =
+    val (gens, chips) = items.partition(isGen)
+    chips.forall(c => gens.isEmpty || gens.contains(toGen(c)))
 
-  private def moveGens(
-      state: State,
-      upDown: Vector[Int],
-      gens: Vector[Int]
-  ): Iterator[(State, Vector[Int])] =
-    for
-      movs <- gens.combinations(2) ++ gens.combinations(1)
-      dir <- upDown
-      newFloor = state.elev + dir
-      newGenLocs = updateLocs(state.genLocs, movs, dir)
-      srcChips = selectItems(state.chipLocs, state.elev)
-      dstChips = selectItems(state.chipLocs, newFloor)
-    yield (State(newFloor, state.chipLocs, newGenLocs), srcChips ++ dstChips)
+  private def isCompleted(state: State): Boolean = state.locs.init.forall(_.isEmpty)
 
-  private def movePair(
-      state: State,
-      upDown: Vector[Int],
-      pairs: Vector[Int]
-  ): Iterator[(State, Vector[Int])] =
-    if pairs.isEmpty then Iterator.empty
-    else
+  private def findMinTransition(start: State): Int =
+    import scala.collection.mutable.{HashSet, PriorityQueue}
+
+    val pq = PriorityQueue[State](start)(Ordering.by(stateOrder))
+    val seen = HashSet(stateHash(start.elev, start.locs))
+
+    while !pq.isEmpty do
+      val state = pq.dequeue()
+      if isCompleted(state) then return state.step
+
+      val State(floor, locs, step, _) = state
+      val newStep = step + 1
       for
-        dir <- upDown.iterator
-        newFloor = state.elev + dir
-        newChipLocs = updateLocs(state.chipLocs, Vector(pairs(0)), dir)
-        newGenLocs = updateLocs(state.genLocs, Vector(pairs(0)), dir)
-        dstChips = selectItems(newChipLocs, newFloor)
-      yield (State(newFloor, newChipLocs, newGenLocs), dstChips)
+        items <- selectItems(locs(floor))
+        newFloor <- Seq(floor + 1, floor - 1) if locs.indices.contains(newFloor)
+        newLocs = moveItems(locs, floor, newFloor, items)
+      do
+        if isSafe(newLocs(floor)) && isSafe(newLocs(newFloor)) then
+          val hash = stateHash(newFloor, newLocs)
+          if !seen.contains(hash) then
+            seen.add(hash)
+            pq.enqueue(State(newFloor, newLocs, newStep, newStep + h(newFloor, newLocs)))
 
-  private def nextStates(state: State): Iterator[(State, Vector[Int])] =
-    val (chips, gens, localPairs) = floorItems(state)
-    val dirs = Vector(1, -1).filter(x => (firstFloor to fourthFloor).contains(x + state.elev))
-
-    moveChips(state, dirs, chips)
-      ++ moveGens(state, dirs, gens)
-      ++ movePair(state, dirs, localPairs)
-
-  private def execute(initState: State): Int =
-    def isComplete(state: State): Boolean =
-      state.chipLocs.forall(_ == fourthFloor) && state.genLocs.forall(_ == fourthFloor)
-
-    def isValidState(state: State, checkChips: Vector[Int]): Boolean =
-      checkChips.forall(c =>
-        val floor = state.chipLocs(c)
-        state.genLocs(c) == floor || !state.genLocs.contains(floor)
-      )
-
-    def bfs(q: Queue[(Int, State)], seen: HashSet[Long]): Int =
-      val (step, state) = q.dequeue()
-
-      if isComplete(state) then step
-      else
-        nextStates(state)
-          .filter(isValidState)
-          .foreach((st, _) =>
-            val hash = stateHash(st)
-            if !seen.contains(hash) then
-              seen.add(hash)
-              q.enqueue((step + 1, st))
-          )
-        bfs(q, seen)
-
-    bfs(Queue((0, initState)), HashSet(stateHash(initState)))
+    -1 // FATAL ERROR: There is no answer
 
   def partOne(): String =
-    val ans = execute(State(firstFloor, initChips, initGens))
-    "%d".format(ans)
+    // Must be set before findMinTransition() is called.
+    nKinds = locations.map(_.length).sum >> 1
+
+    "%d".format(findMinTransition(State(0, locations, 0, h(0, locations))))
 
   def partTwo(): String =
-    val ans = execute(
-      State(
-        firstFloor,
-        initChips.appendedAll(Vector(firstFloor, firstFloor)),
-        initGens.appendedAll(Vector(firstFloor, firstFloor))
-      )
-    )
-    "%d".format(ans)
+    inline val nAddItems = 4
+    val startId = locations.map(_.length).sum
+    val newFirstFloor = locations(0).appendedAll(startId until (startId + nAddItems))
+    val newLocs = locations.updated(0, newFirstFloor)
+
+    // Must be set before findMinTransition() is called.
+    nKinds = (startId + nAddItems) >> 1
+
+    "%d".format(findMinTransition(State(0, newLocs, 0, h(0, newLocs))))
 
   def solve(): Unit =
     printf("%s\n", partOne())
