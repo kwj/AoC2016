@@ -11,10 +11,7 @@ import scala.io.BufferedSource
 
 class Day11(src: BufferedSource) extends Solution:
   private case class State(elev: Int, locs: Vector[Vector[Int]], step: Int, priority: Int)
-  private def stateOrder(state: State): Int =
-    // `state.step` is also used as a parameter for tie-breaking
-    inline val k = 10
-    -(state.priority << k) + state.step
+  private def stateOrder(state: State): (Int, Int) = (-state.priority, state.step)
 
   private inline def toGen(n: Int): Int = n | 0b1
   private inline def toChip(n: Int): Int = n & ~0b1
@@ -105,7 +102,7 @@ class Day11(src: BufferedSource) extends Solution:
     val (gens, chips) = items.partition(isGen)
     chips.forall(c => gens.isEmpty || gens.contains(toGen(c)))
 
-  private def isCompleted(state: State): Boolean = state.locs.init.forall(_.isEmpty)
+  private def isCompleted(locs: Vector[Vector[Int]]): Boolean = locs.init.forall(_.isEmpty)
 
   private def findMinTransition(start: State): Int =
     import scala.collection.mutable.{HashSet, PriorityQueue}
@@ -114,10 +111,9 @@ class Day11(src: BufferedSource) extends Solution:
     val seen = HashSet(stateHash(start.elev, start.locs))
 
     while !pq.isEmpty do
-      val state = pq.dequeue()
-      if isCompleted(state) then return state.step
+      val State(floor, locs, step, _) = pq.dequeue()
+      if isCompleted(locs) then return step
 
-      val State(floor, locs, step, _) = state
       val newStep = step + 1
       for
         items <- selectItems(locs(floor))
