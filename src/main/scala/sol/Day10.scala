@@ -9,7 +9,7 @@ import scala.io.BufferedSource
     output ID: 0, 1 ..  --> -1, -2, ...
 
   instruction:
-    Delivery(destination(target ID), value(microship number))
+    Delivery(destination(target ID), value(microchip number))
 
   state machine:
     HashMap[target id, target]
