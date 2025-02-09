@@ -82,11 +82,11 @@ class Day11(src: BufferedSource) extends Solution:
         case Some(g) => Iterator.apply(Vector(g, toChip(g)))
         case None => Iterator.empty
 
-    pairIt
-      ++ gens.combinations(2)
+    gens.combinations(2)
       ++ gens.combinations(1)
       ++ chips.combinations(2)
       ++ chips.combinations(1)
+      ++ pairIt
 
   private def moveItems(
       locs: Vector[Vector[Int]],
