@@ -55,6 +55,7 @@ class Day11(src: BufferedSource) extends Solution:
     arr.sorted.foldLeft(elev.toLong)((acc, x) => (acc << 4) | x)
 
   // heuristic function for A*
+  // This function returns the minimum steps when there are no constraints
   private def h(elev: Int, locs: Vector[Vector[Int]]): Int =
     // number of steps required to move all items to up one floor.
     def m(x: Int) = if x < 2 then x else 2 * (x - 2) + 1
