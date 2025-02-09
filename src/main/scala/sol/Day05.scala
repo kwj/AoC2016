@@ -15,11 +15,10 @@ class Day05(src: BufferedSource) extends Solution:
     import java.security.MessageDigest
 
     val md5 = MessageDigest.getInstance("MD5")
-    md5.update(seed.getBytes())
 
     Iterator
       .from(0)
-      .map(n => md5.clone().asInstanceOf[MessageDigest].digest(n.toString().getBytes()))
+      .map(n => md5.digest((seed + n.toString()).getBytes()))
       .filter(arr => arr(0) == 0 && arr(1) == 0 && (arr(2) & 0xf0) == 0)
 
   def partOne(): String =

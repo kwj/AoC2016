@@ -24,11 +24,10 @@ class Day14(src: BufferedSource) extends Solution:
 
   private def hashGenerator(seed: String): Iterator[String] =
     val md5 = MessageDigest.getInstance("MD5")
-    md5.update(seed.getBytes())
 
     Iterator
       .from(0)
-      .map(n => md5.clone().asInstanceOf[MessageDigest].digest(n.toString().getBytes()))
+      .map(n => md5.digest((seed + n.toString()).getBytes()))
       .map(toHexString)
 
   private def checkConsecutive(hash: String): (Int, Int) =
