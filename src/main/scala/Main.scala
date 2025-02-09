@@ -11,4 +11,9 @@ package net.vlax.aoc2016
     .takeWhile(_.nonEmpty)
     .map(lineOpt => Solver.getSolver(lineOpt.get))
     .filter(_.nonEmpty)
-    .foreach(_.get.solve())
+    .foreach(solver =>
+      val startTime = System.currentTimeMillis
+      solver.get.solve()
+      val endTime = System.currentTimeMillis
+      println("Elapsed time: " + (endTime - startTime) + " msec.\n")
+    )
