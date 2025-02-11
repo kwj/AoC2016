@@ -1,5 +1,10 @@
 package net.vlax.aoc2016.sol
 
+/*
+Actually, I got the answer by comparing the number of microchips and generators
+regardless of their type. However, I couldn't prove that this method was correct.
+*/
+
 // Note: this solution assumes that the fourth floor is the top floor.
 //
 // type(kind):      A  B  C
