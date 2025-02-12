@@ -42,14 +42,14 @@ class Day15(src: BufferedSource) extends Solution:
     val bArr = b.toArray
     val mArr = m.appended(modulo).toArray
 
-    // mProducts[k] | = 1 [not used]  (k = 0)
+    // mProducts[k] | = 1  (k = 0)
     //              | = m[0] * m[1] * ... * m[k-1]  (k > 0)
     val mProducts = Array.fill(mArr.length)(1)
 
-    // T = x0 + x1 * m0 + x2 * m0 * m1 + ... + x{k} * m0 * m1 * ... * m{k-1} + ...
+    // T = x0 + x1 * m0 + x2 * m0 * m1 + ... + x{k} * m0 * m1 * ... * m{k-1} + ...  (mod. ###)
     // results[k] | = 0 [not used]  (k = 0)
-    //            | = x0  (k = 1)
-    //            | = x0 + ... + x{k-1} * m0 * ... * m{k-2}  (k >= 2)
+    //            | = x0  (mod. ###)  (k = 1)
+    //            | = x0 + ... + x{k-1} * m0 * ... * m{k-2}  (mod. ###)  (k >= 2)
     val results = Array.fill(mArr.length)(0)
 
     for i <- bArr.indices
