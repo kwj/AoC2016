@@ -64,13 +64,13 @@ class Day15(src: BufferedSource) extends Solution:
 
   def partOne(): String =
     val (b, m) = preExec(arrangement)
-    "%d".format(garner(b, m, m.fold(1)(_ * _)))
+    "%d".format(garner(b, m, m.product))
 
   def partTwo(): String =
     val (b, m) = preExec(arrangement)
     val newB = b.appended(mod((-(b.length + 1) - 0), 11))
     val newM = m.appended(11)
-    "%d".format(garner(newB, newM, newM.fold(1)(_ * _)))
+    "%d".format(garner(newB, newM, newM.product))
 
   def solve(): Unit =
     printf("%s\n", partOne())
