@@ -65,7 +65,7 @@ number of ones in the block
 
 let f(x) be a function that returns the number of ones in a block of size x, and
 let k be a number that satisfies k < x <= 2k + 1
-  --> f(x) | = f(2k + 1 - x) + (x - k - 1)  [x > the length of input data]
+  --> f(x) | = f(2k + 1 - x) + (x - k - 1)  [x > len(input data)]
            | = it's easy to know            [otherwise]
  */
 
