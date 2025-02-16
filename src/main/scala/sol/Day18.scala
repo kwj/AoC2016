@@ -24,7 +24,7 @@ class Day18(src: BufferedSource) extends Solution:
 
   private def totalSafeTiles(nRows: Int): Int =
     Iterator
-      .unfold(seed)(x => Some(x, nextRow(x)))
+      .iterate(seed)(nextRow)
       .take(nRows)
       .map(nSafeTiles)
       .sum
