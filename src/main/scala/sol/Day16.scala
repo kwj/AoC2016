@@ -59,12 +59,11 @@ len=2k+1-BS
 
 number of ones in the block
   = number of ones in the sub/1 + number of ones in the sub/2
-  = number of ones in the sub/1 + (BS - k - 1)
+  = number of ones in the sub/1 + (k - len(sub/1))
 
 let f(x) be a function that returns the number of ones in a block of size x, and
-let k be a number that satisfies k < x <= 2k + 1
-  --> f(x) | = f(2k + 1 - x) + (x - k - 1)  [x > len(input data)]
-           | = it's easy to know            [otherwise]
+  f(x) | = it's easy to know                    [when x <= len(input data)]
+       | = f(2k + 1 - x) + (k - (2k + 1 - x))   [when x > len(input data), and let a number k satisfies k < x <= 2k + 1]
  */
 
 import scala.io.BufferedSource
@@ -84,7 +83,7 @@ class Day16(src: BufferedSource) extends Solution:
           if k >= bs then aux(k / 2, bs, acc)
           else
             val nextBS = 2 * k + 1 - bs
-            aux(k, nextBS, acc + bs - k - 1)
+            aux(k, nextBS, acc + (k - nextBS))
 
     val initK = Iterator.iterate(inputLen)(x => 2 * x + 1).dropWhile(_ < rangeSize).next()
 
