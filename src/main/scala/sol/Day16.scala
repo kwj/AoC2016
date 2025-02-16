@@ -41,7 +41,7 @@ We only need to know whether the number of ones in each block is even or odd.
 For the number of ones in a block starting at the beginning, we can know it easily
 when the length of the block is less or equal to the length of input data.
 
-Otherwise:
+Otherwise,
 
      len = k
 ^^^^^^^^^^^^^^^^^^
@@ -61,7 +61,9 @@ number of ones in the block
   = number of ones in the sub/1 + number of ones in the sub/2
   = number of ones in the sub/1 + (k - len(sub/1))
 
-let f(x) be a function that returns the number of ones in a block of size x, and
+Conclution:
+
+let f(x) be a function that returns the number of ones in a block of size x:
   f(x) | = it's easy to know                    [when x <= len(input data)]
        | = f(2k + 1 - x) + (k - (2k + 1 - x))   [when x > len(input data), and let a number k satisfies k < x <= 2k + 1]
  */
