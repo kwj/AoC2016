@@ -82,18 +82,18 @@ class Day16(src: BufferedSource) extends Solution:
       bs <= inputLen match
         case true => acc + cumSum(bs)
         case false =>
-          if k >= bs then aux(k / 2, bs, acc)
+          if k >= bs then aux(k >> 1, bs, acc)
           else
-            val nextBS = 2 * k + 1 - bs
+            val nextBS = (k << 1) + 1 - bs
             aux(k, nextBS, acc + (k - nextBS))
 
-    val initK = Iterator.iterate(inputLen)(x => 2 * x + 1).dropWhile(_ < rangeSize).next()
+    val initK = Iterator.iterate(inputLen)(x => (x << 1) + 1).dropWhile(_ < rangeSize).next()
 
     aux(initK, rangeSize, 0)
 
-  private def getOddParities(targetSize: Int): String =
+  private def getCheckSum(targetSize: Int): String =
     def aux(blkSize: Int, len: Int): (Int, Int) =
-      if (len & 0b1) == 0 then aux(blkSize << 1, len / 2)
+      if (len & 0b1) == 0 then aux(blkSize << 1, len >> 1)
       else (blkSize, len)
 
     // targetSize must be a even number
@@ -117,9 +117,11 @@ class Day16(src: BufferedSource) extends Solution:
       .map(x => if (x & 0b1) == 0 then 1 else 0) // odd parity of each block
       .mkString
 
-  def partOne(): String = getOddParities(272)
+  def partOne(): String =
+    getCheckSum(272)
 
-  def partTwo(): String = getOddParities(35651584)
+  def partTwo(): String =
+    getCheckSum(35651584)
 
   def solve(): Unit =
     printf("%s\n", partOne())
