@@ -12,22 +12,27 @@ class Day17(src: BufferedSource) extends Solution:
   private val md5 = MessageDigest.getInstance("MD5")
 
   private case class Pos(x: Int, y: Int, path: String):
-    val dirs = Seq(0, 1, 2, 3) // U, D, L, R
+    enum Dirs(d: Int):
+      case Up extends Dirs(0)
+      case Down extends Dirs(1)
+      case Left extends Dirs(2)
+      case Right extends Dirs(3)
+
+    val dirs = Seq(Dirs.Up, Dirs.Down, Dirs.Left, Dirs.Right)
     def isValid: Boolean = (1 to Width).contains(x) && (1 to Height).contains(y)
     def isGoal: Boolean = x == Width && y == Height
 
-    def nextPos(dir: Int): Pos =
+    def nextPos(dir: Dirs): Pos =
       dir match
-        case 0 => Pos(x, y - 1, path + "U")
-        case 1 => Pos(x, y + 1, path + "D")
-        case 2 => Pos(x - 1, y, path + "L")
-        case 3 => Pos(x + 1, y, path + "R")
-        case _ => throw new RuntimeException(s"Invalid direction: $dir")
+        case Dirs.Up => Pos(x, y - 1, path + "U")
+        case Dirs.Down => Pos(x, y + 1, path + "D")
+        case Dirs.Left => Pos(x - 1, y, path + "L")
+        case Dirs.Right => Pos(x + 1, y, path + "R")
 
     def nextPositions: Seq[Pos] =
       val arr = md5.digest((seed + path).getBytes())
       dirs
-        .filter(idx => ((arr(idx >> 1) >> (((idx & 0b1) ^ 1) << 2)) & 0x0f) > 0x0a)
+        .filter(idx => ((arr(idx.ordinal >> 1) >> (((idx.ordinal & 0b1) ^ 1) << 2)) & 0x0f) > 0x0a)
         .map(nextPos)
         .filter(_.isValid)
 
