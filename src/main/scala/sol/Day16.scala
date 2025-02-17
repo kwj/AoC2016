@@ -8,7 +8,7 @@ $ factor 272
 $ factor 35651584
 35651584: 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 17
 
-It is clear that the results will be strings of 17-byte in length.
+It is clear that the results will be strings of 17-characters in length.
 
 272 = 2 ^ 4 * 17
   block size = 2^4 = 16
@@ -45,23 +45,26 @@ Otherwise,
 
      len = k
 ^^^^^^^^^^^^^^^^^^
-               len = 2k + 1
+              len = 2k + 1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 001100...0001...10 0 10...0111...110011
-|<--- block (len = BS) --->|<--    -->|
-         [BS > k]       len = 2k + 1 - BS
+|<--- block (len = BS) --->||<--   -->|
+         [BS > k]        len = 2k + 1 - BS
 
-divide the block as follows:
+divide the block into two blocks as follows:
+
 001100...0001...10 0 10...0111...110011
-|<--    -->|<--        --->|
-   sub/1         sub/2
-len=2k+1-BS
+|<--   -->||<--        --->|
+   sub/1   .     sub/2
+len=2k+1-BS.     .
+           ^^^^^^^
+       len=k-(2k+1-BS)
 
 number of ones in the block
   = number of ones in the sub/1 + number of ones in the sub/2
   = number of ones in the sub/1 + (k - len(sub/1))
 
-Conclution:
+Conclusion:
 
 let f(x) be a function that returns the number of ones in a block of size x:
   f(x) | = it's easy to know                    [when x <= len(input data)]
