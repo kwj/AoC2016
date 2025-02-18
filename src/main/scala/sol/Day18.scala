@@ -18,7 +18,7 @@ class Day18(src: BufferedSource) extends Solution:
 
   private lazy val (len, seed, mask) = parseInput(src)
 
-  private def nSafeTiles(n: BigInt): Int = len - n.bitCount
+  private def countSafeTiles(n: BigInt): Int = len - n.bitCount
 
   private def nextRow(n: BigInt): BigInt = ((n << 1) ^ (n >> 1)) & mask
 
@@ -26,7 +26,7 @@ class Day18(src: BufferedSource) extends Solution:
     Iterator
       .iterate(seed)(nextRow)
       .take(nRows)
-      .map(nSafeTiles)
+      .map(countSafeTiles)
       .sum
 
   def partOne(): String =
