@@ -54,11 +54,11 @@ Otherwise,
 divide the block into two blocks as follows:
 
 001100...0001...10 0 10...0111...110011
-|<--   -->||<--        --->|
-   sub/1   .     sub/2
+|<-sub/1->||<--  sub/2 --->|
 len=2k+1-BS.     .
+           |     |
            ^^^^^^^
-       len=k-(2k+1-BS)
+        len=k-(2k+1-BS)
 
 number of ones in the block
   = number of ones in the sub/1 + number of ones in the sub/2

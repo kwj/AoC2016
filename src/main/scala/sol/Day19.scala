@@ -10,7 +10,7 @@ f(n) = 2x + 1  when n = 2^m + x (0 <= x < 2^m)
 
 [Part 2]
 a ... Winner
-start(0-base), nElves - elves
+start(0-base), nElves - elves([X] is the elf at starting position)
 --------
 0, 1  - [a]  (*)
 1, 2  - b [a]  (*)
