@@ -28,9 +28,11 @@ The input data is approximately as shown in the figure below:
   .: type/2 node
   #: type/3 node
 
-The solving method is as follows:
 
-1) Move the empty node to the left of the goal data
+Assuming that no type/3 node exists at coordinates less than y=2,
+the solving method is as follows:
+
+Step 1: Move the empty node to the left of the goal data
 
     ........._G
     ...........
@@ -40,7 +42,7 @@ The solving method is as follows:
     ...........
     ...........
 
-2) Move the goal data to the top-left corner.
+Step 2: Move the goal data to the top-left corner.
 
     G_.........
     ...........
@@ -75,7 +77,7 @@ class Day22(src: BufferedSource) extends Solution:
 
   private lazy val allNodes = parseInput(src)
 
-  private def makeGrid(nodes: Seq[Node]) = // : Array[Array[Node]] =
+  private def makeGrid(nodes: Seq[Node]): Array[Array[Node]] =
     val width = nodes.map(_.x).max + 1
     val height = nodes.map(_.y).max + 1
 
@@ -84,7 +86,7 @@ class Day22(src: BufferedSource) extends Solution:
 
     grid
 
-  private def nextStates(st: State, target: (Int, Int), grid: Array[Array[Node]]): Seq[State] =
+  private def nextStates(st: State, grid: Array[Array[Node]]): Seq[State] =
     val State(x0, y0, step) = st
 
     Seq((x0 + 1, y0), (x0 - 1, y0), (x0, y0 + 1), (x0, y0 - 1))
@@ -93,6 +95,7 @@ class Day22(src: BufferedSource) extends Solution:
       .map((x, y) => State(x, y, step + 1))
 
   private def getStep1(grid: Array[Array[Node]]): Int =
+    // Dijkstra
     import scala.collection.mutable.{HashSet, PriorityQueue}
 
     val startNode = allNodes.find(_.used == 0).get // empty node
@@ -107,7 +110,7 @@ class Day22(src: BufferedSource) extends Solution:
       val st = pq.dequeue()
       if target == (st.x, st.y) then return st.step
 
-      for nextState <- nextStates(st, target, grid)
+      for nextState <- nextStates(st, grid)
       do
         val hash = stateHash(nextState)
         if !seen.contains(hash) then
