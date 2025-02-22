@@ -1,5 +1,29 @@
 package net.vlax.aoc2016.sol
 
+/*
+# The following is a Python implementation of the equivalent of the given program.
+# It is much faster than the original program because it uses addition and multiplication.
+
+part1 = True
+
+a = 1
+b = 1
+c = 0
+d = 26 if part1 == True else 33
+
+# Fibonacci sequence
+while d > 0:
+  c = a
+  a += b
+  b = c
+
+  d -= 1
+
+a += 17 * 18
+
+print(a)
+ */
+
 import scala.collection.mutable.HashMap
 import scala.io.BufferedSource
 
