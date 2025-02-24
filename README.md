@@ -2,9 +2,12 @@
 
 URL: https://adventofcode.com/2016
 
-## Solutions
+## Requirement
 
-All solutions were written in Scala 3.6.3.
+* [Scala](https://www.scala-lang.org/) (confirmed to work with Scala 3.6.3)
+* [Sbt](https://www.scala-sbt.org/) (confimed to work with Sbt 1.10.7)
+
+## Solutions
 
 * [Day 1: No Time for a Taxicab](./src/main/scala/sol/Day01.scala)
 * [Day 2: Bathroom Security](./src/main/scala/sol/Day02.scala)
@@ -31,6 +34,44 @@ All solutions were written in Scala 3.6.3.
 * [Day 23: Safe Cracking](./src/main/scala/sol/Day23.scala)
 * [Day 24: Air Duct Spelunking](./src/main/scala/sol/Day24.scala)
 * [Day 25: Clock Signal](./src/main/scala/sol/Day25.scala)
+
+## How to use
+
+### Place puzzle input data files into each resource folder in advance
+
+For example, if the input file for Day 1 is `input`:
+
+```console
+$ ls ./src/main/resources/01
+input
+$
+```
+
+## Run Sbt
+```console
+$ sbt
+...
+[info] started sbt server
+sbt:AoC2016>
+```
+
+## Run the program
+```console
+sbt:AoC2016> run
+...
+Please enter a date number, or Ctrl-D to exit.
+>
+```
+
+## Enter the date
+```console
+> 1
+***
+***
+Elapsed time: **** msec.
+
+>
+```
 
 ## Note
 
