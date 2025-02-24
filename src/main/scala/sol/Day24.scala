@@ -38,7 +38,7 @@ class Day24(src: BufferedSource) extends Solution:
 
     (distanceTbl, locations.length)
 
-  private lazy val (adjTbl, nLocs) = parseInput(src)
+  private lazy val (adjMatrix, nLocs) = parseInput(src)
 
   private def classifySbs(n: Int, bitSet: Int): (Seq[Int], Seq[Int]) =
     (0 until n)
@@ -49,7 +49,7 @@ class Day24(src: BufferedSource) extends Solution:
           case false => (visited, unVisited.appended(x))
       )
 
-  private def runDP(adjTbl: Array[Array[Int]], n: Int): Array[Double] =
+  private def runDP(adjMatrix: Array[Array[Int]], n: Int): Array[Double] =
     val dpTbl = Array.fill(1 << n, n)(Double.PositiveInfinity)
     dpTbl(1)(0) = 0 // starting from '0'
 
@@ -61,18 +61,18 @@ class Day24(src: BufferedSource) extends Solution:
         .foreach(u =>
           val targetRow = bitSet | (1 << u)
           dpTbl(targetRow)(u) = visited.foldLeft(dpTbl(targetRow)(u))((acc, v) =>
-            acc.min(dpTbl(bitSet)(v) + adjTbl(v)(u))
+            acc.min(dpTbl(bitSet)(v) + adjMatrix(v)(u))
           )
         )
 
     dpTbl((1 << n) - 1)
 
   def partOne(): String =
-    "%d".format(runDP(adjTbl, nLocs).min.toInt)
+    "%d".format(runDP(adjMatrix, nLocs).min.toInt)
 
   def partTwo(): String =
-    val dists = runDP(adjTbl, nLocs)
-    (1 until nLocs).foreach(idx => dists(idx) += adjTbl(idx)(0))
+    val dists = runDP(adjMatrix, nLocs)
+    (1 until nLocs).foreach(idx => dists(idx) += adjMatrix(idx)(0))
 
     "%d".format(dists.min.toInt)
 
