@@ -92,7 +92,7 @@ class Day23(src: BufferedSource) extends Solution:
       case Operand.Num(n) => n
       case Operand.Reg(reg) => st(reg)
 
-  private def opCpy(st: State, op1: Operand, op2: Operand) =
+  private def opCpy(st: State, op1: Operand, op2: Operand): State =
     st("ip") += 1
     op2 match
       case Operand.Reg(reg) => st(reg) = getValue(st, op1)
@@ -100,7 +100,7 @@ class Day23(src: BufferedSource) extends Solution:
 
     st
 
-  private def opInc(st: State, op: Operand) =
+  private def opInc(st: State, op: Operand): State =
     st("ip") += 1
     op match
       case Operand.Reg(reg) => st(reg) += 1
@@ -108,7 +108,7 @@ class Day23(src: BufferedSource) extends Solution:
 
     st
 
-  private def opDec(st: State, op: Operand) =
+  private def opDec(st: State, op: Operand): State =
     st("ip") += 1
     op match
       case Operand.Reg(reg) => st(reg) -= 1
@@ -116,13 +116,13 @@ class Day23(src: BufferedSource) extends Solution:
 
     st
 
-  private def opJnz(st: State, op1: Operand, op2: Operand) =
+  private def opJnz(st: State, op1: Operand, op2: Operand): State =
     if getValue(st, op1) == 0 then st("ip") += 1
     else st("ip") += getValue(st, op2)
 
     st
 
-  private def opTgl(st: State, op: Operand, instructions: Array[Mnemonic]) =
+  private def opTgl(st: State, op: Operand, instructions: Array[Mnemonic]): State =
     val addr = st("ip") + getValue(st, op)
 
     st("ip") += 1
@@ -137,7 +137,7 @@ class Day23(src: BufferedSource) extends Solution:
 
     st
 
-  private def opMul(st: State, op1: Operand, op2: Operand, op3: Operand) =
+  private def opMul(st: State, op1: Operand, op2: Operand, op3: Operand): State =
     st("ip") += 1
     op3 match
       case Operand.Reg(reg) => st(reg) = getValue(st, op1) * getValue(st, op2)
@@ -145,7 +145,7 @@ class Day23(src: BufferedSource) extends Solution:
 
     st
 
-  private def opNop(st: State) =
+  private def opNop(st: State): State =
     st("ip") += 1
 
     st
