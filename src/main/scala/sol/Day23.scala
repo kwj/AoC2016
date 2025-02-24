@@ -47,7 +47,7 @@ class Day23(src: BufferedSource) extends Solution:
     case Mul(x: Operand, y: Operand, z: Operand)
     case Nop
 
-  private def parseInput(src: BufferedSource) = // : Array[Mnemonic] =
+  private def parseInput(src: BufferedSource): Array[Mnemonic] =
     import scala.util.matching.Regex
 
     val reInst = raw"^(\w+) ([\w\-]+) ?(.+)?".r
