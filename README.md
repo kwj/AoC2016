@@ -39,11 +39,15 @@ URL: https://adventofcode.com/2016
 
 ### Place puzzle input data files into each resource folder in advance
 
-For example, if the input file for Day 1 is `input`:
+The default file name of the puzzle input data is `input`:
 
 ```console
-$ ls ./src/main/resources/01
-input
+$ ls ./src/main/resources/*/input
+./src/main/resources/01/input  ./src/main/resources/02/input
+./src/main/resources/03/input  ./src/main/resources/04/input
+  ...
+./src/main/resources/23/input  ./src/main/resources/24/input
+./src/main/resources/25/input
 $
 ```
 
@@ -72,6 +76,17 @@ Elapsed time: **** msec.
 
 >
 ```
+
+It is possible to specify an input file prepared with a different name.
+```console
+> 2 input-example
+***
+***
+Elapsed time: **** msec.
+
+>
+```
+
 
 ## Note
 
