@@ -12,7 +12,7 @@ class Day02(src: BufferedSource) extends Solution:
         case 'R' if keypad(x)(y + 1) != '.' => y = y + 1
         case _ => ()
 
-    def getChar(): Char = keypad(x)(y)
+    def getChar: Char = keypad(x)(y)
 
   private def parseInput(src: BufferedSource): Seq[Array[Char]] =
     src
@@ -26,7 +26,7 @@ class Day02(src: BufferedSource) extends Solution:
     insts
       .map(directions =>
         directions.foreach(keypad.move)
-        keypad.getChar()
+        keypad.getChar
       )
       .mkString
 
