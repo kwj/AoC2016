@@ -61,7 +61,7 @@ class Day24(src: BufferedSource) extends Solution:
           )
         )
 
-    dpTbl((1 << n) - 1)
+    dpTbl.last
 
   def partOne(): String =
     "%d".format(runDP(adjMatrix, nLocs).min.toInt)
