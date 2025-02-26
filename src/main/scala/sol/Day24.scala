@@ -4,15 +4,11 @@ import scala.io.BufferedSource
 
 class Day24(src: BufferedSource) extends Solution:
   private def parseInput(src: BufferedSource): (Array[Array[Int]], Int) =
+    import scala.collection.mutable.{HashSet, Queue}
+
     val lines = src.getLines().map(_.toArray).toArray
     val width = lines(0).length
     val grid = lines.flatMap(identity)
-
-    getDistanceTbl(grid, width)
-
-  private def getDistanceTbl(grid: Array[Char], width: Int): (Array[Array[Int]], Int) =
-    import scala.collection.mutable.{HashSet, Queue}
-
     val locations =
       grid.zipWithIndex.filter((ch, _) => ch.isDigit).map((ch, idx) => (ch.toInt - '0', idx))
     val distanceTbl = Array.fill(locations.length, locations.length)(0)
@@ -29,8 +25,8 @@ class Day24(src: BufferedSource) extends Solution:
 
         Seq(1, -1, width, -width)
           .map(_ + pos)
-          .filter(x => grid(x) != '#')
-          .filter(x => !visited.contains(x))
+          .filter(grid(_) != '#')
+          .filter(!visited.contains(_))
           .foreach(x =>
             visited.add(x)
             q.enqueue((x, step + 1))
@@ -71,10 +67,9 @@ class Day24(src: BufferedSource) extends Solution:
     "%d".format(runDP(adjMatrix, nLocs).min.toInt)
 
   def partTwo(): String =
-    val dists = runDP(adjMatrix, nLocs)
-    (1 until nLocs).foreach(idx => dists(idx) += adjMatrix(idx)(0))
-
-    "%d".format(dists.min.toInt)
+    "%d".format(
+      runDP(adjMatrix, nLocs).zipWithIndex.map((v, idx) => v + adjMatrix(idx)(0)).min.toInt
+    )
 
   def solve(): Unit =
     printf("%s\n", partOne())
