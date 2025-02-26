@@ -63,12 +63,14 @@ class Day24(src: BufferedSource) extends Solution:
 
     dpTbl.last
 
+  private lazy val dpResult = runDP(adjMatrix, nLocs)
+
   def partOne(): String =
-    "%d".format(runDP(adjMatrix, nLocs).min.toInt)
+    "%d".format(dpResult.min.toInt)
 
   def partTwo(): String =
     "%d".format(
-      runDP(adjMatrix, nLocs).zipWithIndex.map((v, idx) => v + adjMatrix(idx)(0)).min.toInt
+      dpResult.zipWithIndex.map((v, idx) => v + adjMatrix(idx)(0)).min.toInt
     )
 
   def solve(): Unit =
