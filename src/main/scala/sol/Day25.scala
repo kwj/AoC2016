@@ -14,7 +14,10 @@ while True:
 
 ----------------------
 [Part 1]
-The solution to this problem is to understand a given code, and it can't be solved by simulating the code.
+Trying to solve this problem with simulation would also require a debugger-like implementation
+to check outputs and registers. I was too lazy to do it, so I decided to read the given code and
+got the answer directly.
+
 As shown the above code, we need to find a number that its binary notation is clock signal.
  */
 
