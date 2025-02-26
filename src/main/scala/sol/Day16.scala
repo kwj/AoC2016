@@ -21,7 +21,7 @@ It is clear that the results will be strings of 17-characters in length.
 ... -> 01, 10 -> 0
 
 Each block is reduced to a single byte character ('0' or '1').
-As a result of the reduction, this character becomes the odd parity bit of a block.
+As a result of the reduction, this character becomes the odd parity of a block.
 
 From example:
   110010110100:
@@ -38,10 +38,13 @@ From example:
 
 We only need to know whether the number of ones in each block is even or odd.
 
-For the number of ones in a block starting at the beginning, we can know it easily
-when the length of the block is less or equal to the length of input data.
 
-Otherwise,
+Directly finding the number of ones in each block would need to generate data
+by a modified dragon curve. However, in case of blocks which start from the beginning
+of the disk, there is an easy way to find it without actual data.
+
+If the length of the block is less than or equal to the length of the input data,
+it is easy to find it. Otherwise,
 
      len = k
 ^^^^^^^^^^^^^^^^^^
@@ -67,8 +70,9 @@ number of ones in the block
 Conclusion:
 
 let f(x) be a function that returns the number of ones in a block of size x:
-  f(x) | = it's easy to know                    [when x <= len(input data)]
-       | = f(2k + 1 - x) + (k - (2k + 1 - x))   [when x > len(input data), and let a number k satisfies k < x <= 2k + 1]
+
+  f(x) | = f(2k + 1 - x) + (k - (2k + 1 - x))   [when x > len(input data), and let a number k satisfies k < x <= 2k + 1]
+       | = it's easy to know                    [when x <= len(input data)]
  */
 
 import scala.io.BufferedSource
