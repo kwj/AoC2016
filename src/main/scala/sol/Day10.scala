@@ -27,14 +27,14 @@ class Day10(src: BufferedSource) extends Solution:
 
   private trait Target:
     def post(v: Int): Option[(Int, (Int, Int), List[Delivery])]
-    def list(): List[Int]
+    def list: List[Int]
 
   private class Output(val id: Int) extends Target:
     private val box = HashSet[Int]()
     def post(v: Int) =
       box.add(v)
       None
-    def list() = box.toList
+    def list = box.toList
 
   private class Bot(val id: Int, nextTargets: List[Int]) extends Target:
     private val box = ArrayBuffer[Int]()
@@ -45,7 +45,7 @@ class Day10(src: BufferedSource) extends Solution:
       else
         val elems = List(box.remove(0), v).sorted
         Some(id, (elems(0), elems(1)), nextTargets.zip(elems).map((dst, v) => Delivery(dst, v)))
-    def list() = box.toList
+    def list = box.toList
 
   private def toTargetId(dst: String, n: Int) = if dst == "output" then -(n + 1) else n
 
@@ -78,34 +78,36 @@ class Day10(src: BufferedSource) extends Solution:
 
     (stateMachine, instructions)
 
-  private lazy val (stateMachine, instructions) = parseInput(src)
+  private lazy val (initState, instructions) = parseInput(src)
 
-  private val log = ArrayBuffer[((Int, Int), Int)]()
+  private def execute(state: HashMap[Int, Target], order: Queue[Delivery]) = //: Unit =
+    val stateMachine = state.clone()
+    val log = ArrayBuffer[((Int, Int), Int)]()
 
-  private def execute(): Unit =
-    while instructions.length > 0 do
-      val Delivery(dst, v) = instructions.dequeue()
+    while !order.isEmpty do
+      val Delivery(dst, v) = order.dequeue()
       stateMachine.get(dst).get.post(v) match
         case Some((id, tpl, nexts)) =>
           log.addOne((tpl, id))
-          nexts.foreach(instructions.enqueue)
+          order.enqueueAll(nexts)
+          ()
         case None => ()
 
+    (stateMachine, log)
+
+  private lazy val (finalState, log) = execute(initState, instructions)
+
   def partOne(): String =
-    execute()
     log.find((tpl, _) => tpl == (17, 61)) match
       case Some((_, id)) => "%d".format(id)
       case None => throw new RuntimeException("There is no answer.")
 
   def partTwo(): String =
-    execute()
-    val ans =
+    "%d".format(
       (0 to 2)
-        .map(n => stateMachine.get(toTargetId("output", n)).get.list())
-        .map(_.fold(1)(_ * _))
-        .fold(1)(_ * _)
-
-    "%d".format(ans)
+        .map(n => finalState.get(toTargetId("output", n)).get.list.product)
+        .product
+    )
 
   def solve(): Unit =
     printf("%s\n", partOne())
