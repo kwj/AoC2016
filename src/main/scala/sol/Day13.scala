@@ -7,7 +7,7 @@ class Day13(src: BufferedSource) extends Solution:
   private case class Pos2D(x: Int, y: Int):
     def +(other: Pos2D): Pos2D = Pos2D(x + other.x, y + other.y)
     def isOpen(): Boolean =
-      (Integer.bitCount((x + y) * (x + y + 1) + 2 * x + seed) & 0b1) == 0 && x >= 0 && y >= 0
+      x >= 0 && y >= 0 && (Integer.bitCount((x + y) * (x + y + 1) + 2 * x + seed) & 0b1) == 0
 
   private lazy val seed = src.getLines().next().toInt
 
@@ -17,19 +17,20 @@ class Day13(src: BufferedSource) extends Solution:
     val start = Pos2D(1, 1)
     val goal = Pos2D(31, 39)
 
-    def bfs(q: Queue[(Int, Pos2D)], visited: HashSet[Pos2D]): Int =
+    def bfs(q: Queue[(Int, Pos2D)], checked: HashSet[Pos2D]): Int =
       val (step, pos) = q.dequeue()
 
       if pos == goal then step
       else
         dirs
           .map(_ + pos)
+          .filterNot(checked.contains)
           .foreach(nextPos =>
-            if !visited.contains(nextPos) && nextPos.isOpen() then
-              visited.add(nextPos)
+            checked.add(nextPos)
+            if nextPos.isOpen() then
               q.enqueue((step + 1, nextPos))
           )
-        bfs(q, visited)
+        bfs(q, checked)
 
     "%d".format(bfs(Queue((0, start)), HashSet(start)))
 
@@ -37,19 +38,24 @@ class Day13(src: BufferedSource) extends Solution:
     val start = Pos2D(1, 1)
     val limit = 50
     val q = Queue((0, start))
-    val visited = HashSet(start)
+    val checked = HashSet(start)
+    var nLocs = 1
 
-    while q.size > 0 do
+    while !q.isEmpty do
       val (step, pos) = q.dequeue()
-      dirs
-        .map(_ + pos)
-        .foreach(nextPos =>
-          if step < limit && !visited.contains(nextPos) && nextPos.isOpen() then
-            visited.add(nextPos)
-            q.enqueue((step + 1, nextPos))
-        )
 
-    "%d".format(visited.size)
+      if step < limit then
+        dirs
+          .map(_ + pos)
+          .filterNot(checked.contains)
+          .foreach(nextPos =>
+            checked.add(nextPos)
+            if nextPos.isOpen() then
+              q.enqueue((step + 1, nextPos))
+              nLocs += 1
+          )
+
+    "%d".format(nLocs)
 
   def solve(): Unit =
     printf("%s\n", partOne())
