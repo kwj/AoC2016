@@ -3,8 +3,8 @@ package net.vlax.aoc2016.sol
 import scala.io.BufferedSource
 
 class Day04(src: BufferedSource) extends Solution:
-  private class roomInfo(val encName: String, val sectorId: Int, val checkSum: String):
-    def isValidCheckSum(): Boolean =
+  private case class RoomInfo(val encName: String, val sectorId: Int, val checkSum: String):
+    def isValidCheckSum: Boolean =
       encName.toArray
         .filter(_ != '-')
         .groupBy(identity)
@@ -15,7 +15,7 @@ class Day04(src: BufferedSource) extends Solution:
         .mkString
         == checkSum
 
-    def decode(): String =
+    def decode: String =
       encName
         .map({
           case '-' => ' '
@@ -23,7 +23,7 @@ class Day04(src: BufferedSource) extends Solution:
         })
         .mkString
 
-  private def parseInput(src: BufferedSource): Seq[roomInfo] =
+  private def parseInput(src: BufferedSource): Seq[RoomInfo] =
     import scala.util.matching.Regex
 
     val re = raw"(\S+)-(\d+)\[(\S+)\]".r
@@ -31,7 +31,7 @@ class Day04(src: BufferedSource) extends Solution:
     src
       .getLines()
       .map({
-        case re(encName, sectorId, checkSum) => roomInfo(encName, sectorId.toInt, checkSum)
+        case re(encName, sectorId, checkSum) => RoomInfo(encName, sectorId.toInt, checkSum)
         case line => throw new RuntimeException(s"Invalid data: $line")
       })
       .toSeq
@@ -48,10 +48,10 @@ class Day04(src: BufferedSource) extends Solution:
     re1.matches(s) && re2.matches(s) && re3.matches(s)
 
   def partOne(): String =
-    "%d".format(rooms.filter(_.isValidCheckSum()).map(_.sectorId).sum)
+    "%d".format(rooms.filter(_.isValidCheckSum).map(_.sectorId).sum)
 
   def partTwo(): String =
-    rooms.filter(_.isValidCheckSum()).find(elm => isNorthPoleObject(elm.decode())) match
+    rooms.filter(_.isValidCheckSum).find(room => isNorthPoleObject(room.decode)) match
       case Some(room) => "%d".format(room.sectorId)
       case None => throw new RuntimeException("There is no answer.")
 
