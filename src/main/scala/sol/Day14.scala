@@ -8,27 +8,19 @@ class Day14(src: BufferedSource) extends Solution:
   private inline val nConsecutive = 1000
 
   private lazy val salt = src.getLines().next()
+  private val trTbl = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
 
   private def toHexString(hash: Array[Byte]): String =
-    val tbl = "0123456789abcdef".toArray
     val buf = new Array[Char](hash.length * 2)
 
     for
       i <- hash.indices
       data = hash(i) & 0xff
     do
-      buf(i * 2) = tbl(data >> 4)
-      buf(i * 2 + 1) = tbl(data & 0x0f)
+      buf(i * 2) = trTbl(data >> 4)
+      buf(i * 2 + 1) = trTbl(data & 0x0f)
 
     buf.mkString
-
-  private def hashGenerator(seed: String): Iterator[String] =
-    val md5 = MessageDigest.getInstance("MD5")
-
-    Iterator
-      .from(0)
-      .map(n => md5.digest((seed + n.toString()).getBytes()))
-      .map(toHexString)
 
   private def checkConsecutive(hash: String): (Int, Int) =
     def isAllSame(arr: Array[Char]): Boolean = arr.forall(_ == arr.head)
@@ -48,20 +40,25 @@ class Day14(src: BufferedSource) extends Solution:
       c5s.foldLeft(0)((acc, n) => acc | (1 << n))
     )
 
-  private def searchKeyIndexes(seed: String, stretch: Int = 0): Iterator[Int] =
+  private def searchKeyIndexes(seed: String, nStretch: Int = 0): Iterator[Int] =
     val md5 = MessageDigest.getInstance("MD5")
 
-    hashGenerator(seed)
-      .map(hash =>
-        Iterator.iterate(hash)(s => toHexString(md5.digest(s.getBytes()))).drop(stretch).next()
-      )
+    def stretch(hashStr: String, cnt: Int): String =
+      cnt > 0 match
+        case true => stretch(toHexString(md5.digest(hashStr.getBytes())), cnt - 1)
+        case false => hashStr
+
+    Iterator
+      .from(0)
+      .map(n => toHexString(md5.digest((seed + n.toString()).getBytes())))
+      .map(s => stretch(s, nStretch))
       .zipWithIndex
       .map((s, idx) =>
         val (c3, c5) = checkConsecutive(s)
         (idx, s, c3, c5)
       )
       .sliding(1 + nConsecutive)
-      .filter({ case (_, _, c3, _) +: rest => c3 != 0 && rest.exists((_, _, _, c5) => (c3 & c5) != 0) })
+      .withFilter({ case (_, _, c3, _) +: rest => c3 != 0 && rest.exists((_, _, _, c5) => (c3 & c5) != 0) })
       .map(_.head)
       .map(_(0))
 
