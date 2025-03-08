@@ -4,8 +4,8 @@ URL: https://adventofcode.com/2016
 
 ## Requirement
 
-* [Scala](https://www.scala-lang.org/) (confirmed to work with Scala 3.6.3)
-* [sbt](https://www.scala-sbt.org/) (confimed to work with sbt 1.10.7)
+* [Scala](https://www.scala-lang.org/) (confirmed to work with Scala 3.6.4)
+* [sbt](https://www.scala-sbt.org/) (confimed to work with sbt 1.10.10)
 
 ## Solutions
 
