@@ -114,7 +114,7 @@ class Day11(src: BufferedSource) extends Solution:
   private def findMinTransition(start: State): Int =
     import scala.collection.mutable.{HashSet, PriorityQueue}
 
-    val pq = PriorityQueue[State](start)(Ordering.by(stateOrder))
+    val pq = PriorityQueue[State](start)(using Ordering.by(stateOrder))
     val seen = HashSet(stateHash(start.elev, start.locs))
 
     while !pq.isEmpty do

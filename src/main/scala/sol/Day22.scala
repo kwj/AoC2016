@@ -103,7 +103,7 @@ class Day22(src: BufferedSource) extends Solution:
 
     val target = (grid(0).indices.max - 1, 0) // top-right node
 
-    val pq = PriorityQueue[State](start)(Ordering.by(stateOrder))
+    val pq = PriorityQueue[State](start)(using Ordering.by(stateOrder))
     val seen = HashSet(stateHash(start))
 
     while !pq.isEmpty do

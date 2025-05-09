@@ -4,7 +4,7 @@ URL: https://adventofcode.com/2016
 
 ## Prerequisites
 
-* [Scala](https://www.scala-lang.org/) (confirmed to work with Scala 3.6.4)
+* [Scala](https://www.scala-lang.org/) (confirmed to work with Scala 3.7.0)
 * [sbt](https://www.scala-sbt.org/) (confimed to work with sbt 1.10.11)
 
 ## Solutions
