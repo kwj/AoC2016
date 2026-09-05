@@ -18,7 +18,7 @@ class Day24(src: BufferedSource) extends Solution:
       val visited = HashSet(start)
       val q = Queue((start, 0))
       while !q.isEmpty do
-        val (pos, step) = q.dequeue
+        val (pos, step) = q.dequeue()
         if grid(pos).isDigit then
           val dst = grid(pos) - '0'
           distanceTbl(src)(dst) = step
